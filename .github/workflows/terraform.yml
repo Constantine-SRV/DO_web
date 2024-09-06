@@ -32,6 +32,7 @@ jobs:
       - name: Terraform Run
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          TF_VAR_do_token: ${{ secrets.DO_TOKEN }} 
         run: |
           echo "INFO: started by ${{ github.actor }}"
           echo "INFO: start $(date -u)"
