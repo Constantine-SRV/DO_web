@@ -1,35 +1,75 @@
 name: 'Terraform CI'
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      command:
+        type: choice
+        description: Select Terraform command to execute
+        default: plan
+        options:
+          - plan
+          - apply
+          - destroy
+      branch:
+        type: string
+        description: The branch to checkout
+        default: main
 
 jobs:
-  terraform:
+  build:
     runs-on: ubuntu-latest
+    name: terraform ${{ github.event.inputs.command }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Checkout the selected branch
+      - name: Checkout terraform branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}  # Checkout the branch specified in input
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      # Setup Terraform
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v2.0.2
 
-      - name: Terraform Init
-        run: terraform init
+      # Run Terraform command
+      - name: Terraform Run
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          echo "INFO: started by ${{ github.actor }}"
+          echo "INFO: start $(date -u)"
+          SECONDS=0
 
-      - name: Terraform Plan
-        run: terraform plan
+          WORKING_DIR="."
+          echo "RUN: cd ${WORKING_DIR}"
+          cd "$WORKING_DIR"
 
-      - name: Terraform Apply
-        if: github.event_name == 'push'
-        run: terraform apply -auto-approve
+          echo "RUN: terraform init"
+          terraform init
+
+          echo "RUN: terraform fmt -check"
+          terraform fmt -check
+
+          echo "RUN: terraform validate"
+          terraform validate
+
+          # Handling different Terraform commands based on input
+          if [[ "${{ github.event.inputs.command }}" == "plan" ]]; then
+              echo "RUN: terraform plan"
+              terraform plan
+          elif [[ "${{ github.event.inputs.command }}" == "apply" ]]; then
+              echo "RUN: terraform apply -input=false -auto-approve -lock=false"
+              terraform apply -input=false -auto-approve -lock=false
+          elif [[ "${{ github.event.inputs.command }}" == "destroy" ]]; then
+              echo "RUN: terraform destroy -input=false -auto-approve -lock=false"
+              terraform destroy -input=false -auto-approve -lock=false
+          fi
+
+          echo "INFO: finished at $(date -u)"
+          echo "INFO: duration $(($SECONDS / 60)) min $(($SECONDS % 60)) sec"
 
     env:
       DO_TOKEN: ${{ secrets.DO_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}  
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY }} 
+      AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY }}
