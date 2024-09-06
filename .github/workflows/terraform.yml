@@ -11,10 +11,6 @@ on:
           - plan
           - apply
           - destroy
-      branch:
-        type: string
-        description: The branch to checkout
-        default: main
 
 jobs:
   build:
@@ -22,11 +18,11 @@ jobs:
     name: terraform ${{ github.event.inputs.command }}
 
     steps:
-      # Checkout the selected branch
+      # Checkout the selected branch from GitHub's standard branch selector
       - name: Checkout terraform branch
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch }}  # Checkout the branch specified in input
+          ref: ${{ github.ref_name }}  # Automatically check out the selected branch
 
       # Setup Terraform
       - name: Terraform Setup
