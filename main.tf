@@ -1,11 +1,9 @@
 terraform {
   backend "s3" {
-    endpoint   = "fra1.digitaloceanspaces.com"   
-    bucket     = "tf2-state-store"              
-    key        = "terraform.tfstate"           
-    region     = "fra1"                        
-    access_key = var.spaces_access_key         
-    secret_key = var.spaces_secret_key          
+    endpoint   = "fra1.digitaloceanspaces.com"
+    bucket     = "tf2-state-store"
+    key        = "terraform.tfstate"
+    region     = "fra1"
     skip_region_validation = true
     skip_credentials_validation = true
   }
@@ -20,5 +18,5 @@ terraform {
 }
 
 provider "digitalocean" {
-  token = var.do_token 
+  token = var.do_token
 }

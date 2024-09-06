@@ -31,5 +31,5 @@ jobs:
 
     env:
       DO_TOKEN: ${{ secrets.DO_TOKEN }}
-      SPACES_ACCESS_KEY: ${{ secrets.SPACES_ACCESS_KEY }}
-      SPACES_SECRET_KEY: ${{ secrets.SPACES_SECRET_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY }}  
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_KEY }} 
