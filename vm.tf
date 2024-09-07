@@ -23,6 +23,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     connection {
       type        = "ssh"
       host        = digitalocean_droplet.vm_0_0.ipv4_address
+      agent       = false
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }
@@ -35,6 +36,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     connection {
       type        = "ssh"
       host        = digitalocean_droplet.vm_0_0.ipv4_address
+      agent       = false
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }
@@ -59,6 +61,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     connection {
       type        = "ssh"
       host        = digitalocean_droplet.vm_0_0.ipv4_address
+      agent       = false
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }
