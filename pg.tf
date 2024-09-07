@@ -29,20 +29,39 @@ resource "digitalocean_database_firewall" "pg_sg" {
   # trusted_sources = []
 }
 
-# null_resource for updating DNS records (using the Hetzner API)
-resource "null_resource" "update_dns" {
+# null_resource for updating DNS records (using the Hetzner API) and restoring database from a dump
+resource "null_resource" "update_dns_and_restore_db" {
   triggers = {
     endpoint = digitalocean_database_cluster.pg_instance.host
   }
 
   provisioner "local-exec" {
-    command = "python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log"
+    command = <<EOT
+      # Update DNS using Hetzner API
+      python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log
+
+      # Restore database from a dump
+      export DB_HOST='${digitalocean_database_cluster.pg_instance.host}'
+      export DB_USER='${digitalocean_database_cluster.pg_instance.user}' # Take user from the cluster
+      export DB_PASS='${digitalocean_database_cluster.pg_instance.password}'
+      export DB_NAME='${digitalocean_database_db.db_instance.name}' # Take DB name from the created database
+      export DB_PORT='${digitalocean_database_cluster.pg_instance.port}' # Pass the correct port
+      export ACC_KEY='${var.arm_access_key}'
+      sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh
+      sudo chmod +x /usr/local/bin/restore_pg_dump.sh
+      sudo -E /usr/local/bin/restore_pg_dump.sh
+    EOT
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
       HETZNER_C_NAME      = digitalocean_database_cluster.pg_instance.host
       HETZNER_RECORD_NAME = "pgdo"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
+  }
+
+  provisioner "file" {
+    source      = "restore_pg_dump.sh"
+    destination = "/tmp/restore_pg_dump.sh"
   }
 }
 

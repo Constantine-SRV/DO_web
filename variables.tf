@@ -26,3 +26,9 @@ variable "hetzner_dns_key" {
   type        = string
   sensitive   = true
 }
+#ARM_ACCESS_KEY
+variable "arm_access_key" {
+  type        = string
+  description = "az storage key"
+  default     = ""
+}
