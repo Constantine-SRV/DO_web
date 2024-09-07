@@ -60,16 +60,3 @@ resource "null_resource" "update_dns" {
   }
 }
 
-# Variable for the database password (from GitHub Secrets)
-variable "db_password" {
-  description = "The password for the PostgreSQL database"
-  type        = string
-  sensitive   = true
-}
-
-# Variable for the Hetzner DNS key
-variable "hetzner_dns_key" {
-  description = "Hetzner DNS API key"
-  type        = string
-  sensitive   = true
-}
