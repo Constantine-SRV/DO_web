@@ -70,6 +70,18 @@ resource "digitalocean_droplet" "vm_0_0" {
       private_key = file("${path.module}/az_ssh_key.pem")
     }
   }
+
+
+
+  depends_on = [digitalocean_database_cluster.pg_instance, digitalocean_database_db.db_instance]
+}
+
+resource "null_resource" "update_dns_webdo7" {
+  triggers = {
+    endpoint = digitalocean_database_cluster.pg_instance.host
+  }
+
+
   provisioner "local-exec" {
     command = "python3 update_hetzner.py"
     environment = {
@@ -79,7 +91,5 @@ resource "digitalocean_droplet" "vm_0_0" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
-
-
-  depends_on = [digitalocean_database_cluster.pg_instance, digitalocean_database_db.db_instance]
+  depends_on = [digitalocean_droplet.vm_0_0]
 }
