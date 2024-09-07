@@ -1,6 +1,6 @@
 # Create a VPC with a custom IP range
-resource "digitalocean_vpc" "vpc_0_0" {
-  name     = "0_0_VPC"
+resource "digitalocean_vpc" "vpc-0-0" {
+  name     = "vpc-0-0"      # Updated name to use only valid characters (letters, numbers, hyphens)
   region   = "fra1"         # Region for VPC (e.g., Frankfurt)
   ip_range = "10.10.0.0/16" # CIDR block for VPC
 
@@ -13,7 +13,7 @@ resource "digitalocean_droplet" "vm_0_0" {
   region   = "fra1"                      # Region for Droplet (e.g., Frankfurt)
   size     = "s-1vcpu-1gb"               # Droplet size
   image    = "ubuntu-22-04-x64"          # OS image for the Droplet
-  vpc_uuid = digitalocean_vpc.vpc_0_0.id # Attach Droplet to the created VPC
+  vpc_uuid = digitalocean_vpc.vpc-0-0.id # Attach Droplet to the created VPC
 
   # Use the existing SSH key
   ssh_keys = [data.digitalocean_ssh_key.az_ssh_key.id]
