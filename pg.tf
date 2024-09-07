@@ -56,5 +56,5 @@ output "db_user" {
 output "db_password" {
   description = "The password for the PostgreSQL database"
   value       = digitalocean_database_cluster.pg_instance.password
-  #sensitive   = true
+  sensitive   = true
 }
