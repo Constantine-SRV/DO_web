@@ -36,7 +36,7 @@ resource "null_resource" "update_dns" {
   }
 
   provisioner "local-exec" {
-    command = "python3 update_hetzner.py"
+    command = "python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log"
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
       HETZNER_C_NAME      = digitalocean_database_cluster.pg_instance.host
@@ -56,5 +56,5 @@ output "db_user" {
 output "db_password" {
   description = "The password for the PostgreSQL database"
   value       = digitalocean_database_cluster.pg_instance.password
-  sensitive   = true
+  #sensitive   = true
 }
