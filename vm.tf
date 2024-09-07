@@ -1,8 +1,8 @@
-
 # Fetch the existing SSH key by name
 data "digitalocean_ssh_key" "az_ssh_key" {
   name = "az_ssh_key_pem" # Name of your existing SSH key
 }
+
 # Create a Droplet in the specified VPC
 resource "digitalocean_droplet" "vm_0_0" {
   name     = "terraform-droplet"

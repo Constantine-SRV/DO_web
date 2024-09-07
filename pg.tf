@@ -15,20 +15,19 @@ resource "digitalocean_database_db" "db_instance" {
   name       = "dbwebdo"                                    # Custom database name
 }
 
-# Create a firewall for the PostgreSQL database
+# Create a firewall for the PostgreSQL database with public access temporarily
 resource "digitalocean_database_firewall" "pg_sg" {
   cluster_id = digitalocean_database_cluster.pg_instance.id # Associate with the PostgreSQL cluster
 
-  # Allow access from a specific Droplet
+  # Allow access from all IPs (temporary rule)
   rule {
     type  = "ip_addr"
     value = "0.0.0.0/0" # Temporary allow access to everyone
   }
-
 }
 
-# null_resource for updating DNS records (using the Hetzner API) and restoring database from a dump
-resource "null_resource" "update_dns_and_restore_db" {
+# null_resource for updating DNS records (using the Hetzner API)
+resource "null_resource" "update_dns" {
   triggers = {
     endpoint = digitalocean_database_cluster.pg_instance.host
   }
@@ -37,7 +36,6 @@ resource "null_resource" "update_dns_and_restore_db" {
     command = <<EOT
       # Update DNS using Hetzner API
       python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log
-
     EOT
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
@@ -53,7 +51,7 @@ resource "null_resource" "update_dns_and_restore_db" {
   }
 }
 
-
+# Update firewall to allow only the Droplet access
 resource "digitalocean_database_firewall" "pg_sg_update" {
   cluster_id = digitalocean_database_cluster.pg_instance.id
 
@@ -63,10 +61,8 @@ resource "digitalocean_database_firewall" "pg_sg_update" {
     value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
   }
 
-  depends_on = [null_resource.update_firewall] # Update after Droplet is created
+  depends_on = [digitalocean_droplet.vm_0_0] # Ensure Droplet is created before updating firewall
 }
-
-
 
 # Output the PostgreSQL database username
 output "db_user" {
