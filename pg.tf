@@ -7,7 +7,6 @@ resource "digitalocean_database_cluster" "pg_instance" {
   size                 = "db-s-1vcpu-1gb"            # Database instance size
   node_count           = 1                           # Number of nodes in the cluster
   private_network_uuid = digitalocean_vpc.vpc-0-0.id # Attach to the created VPC
-
 }
 
 # Create a new database in the cluster
@@ -20,17 +19,14 @@ resource "digitalocean_database_db" "db_instance" {
 resource "digitalocean_database_firewall" "pg_sg" {
   cluster_id = digitalocean_database_cluster.pg_instance.id # Associate with the PostgreSQL cluster
 
-  # Allow access from a specific IP address (public access)
-  rule {
-    type  = "ip_addr"
-    value = "0.0.0.0/0" # Allow public access to the database
-  }
-
   # Allow access from a specific Droplet
   rule {
     type  = "droplet"
     value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
   }
+
+  # Uncomment to allow access from all IPs (public access), removing all trusted sources
+  # trusted_sources = []
 }
 
 # null_resource for updating DNS records (using the Hetzner API)
@@ -49,6 +45,7 @@ resource "null_resource" "update_dns" {
     }
   }
 }
+
 # Output the PostgreSQL database username
 output "db_user" {
   description = "The username for the PostgreSQL database"
@@ -61,4 +58,3 @@ output "db_password" {
   value       = digitalocean_database_cluster.pg_instance.password
   sensitive   = true
 }
-
