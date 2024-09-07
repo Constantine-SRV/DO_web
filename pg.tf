@@ -14,7 +14,7 @@ resource "digitalocean_database_cluster" "pg_instance" {
 }
 
 # Create a new database in the cluster
-resource "digitalocean_database" "db_instance" {
+resource "digitalocean_database_db" "db_instance" {
   cluster_id = digitalocean_database_cluster.pg_instance.id # Attach to the cluster
   name       = "dbwebdo"                                    # Custom database name
 }
@@ -35,13 +35,6 @@ resource "digitalocean_database_firewall" "pg_sg" {
     value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
   }
 }
-
-# Output the PostgreSQL database endpoint
-output "db_endpoint" {
-  description = "The endpoint of the PostgreSQL database"
-  value       = digitalocean_database_cluster.pg_instance.host
-}
-
 
 # null_resource for updating DNS records (using the Hetzner API)
 resource "null_resource" "update_dns" {
