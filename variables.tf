@@ -14,3 +14,15 @@ variable "spaces_secret_key" {
   description = "Secret Key for DigitalOcean Spaces"
   default     = ""
 }
+
+variable "db_password" {
+  description = "The password for the PostgreSQL database"
+  type        = string
+  sensitive   = true
+}
+
+variable "hetzner_dns_key" {
+  description = "The API key for Hetzner DNS"
+  type        = string
+  sensitive   = true
+}
