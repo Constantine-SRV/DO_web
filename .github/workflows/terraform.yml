@@ -27,8 +27,16 @@ jobs:
       # Setup Terraform
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v2.0.2
-
-      # Run Terraform command
+      
+      - name: Retrieve SSH Key from Azure Storage
+        run: |
+          echo "Retrieving SSH Key from Azure Storage..."
+          az storage blob download --container-name key --name az_ssh_key.pem --file az_ssh_key.pem --account-name constantine2zu --auth-mode key --account-key ${{ secrets.ARM_ACCESS_KEY }}
+          chmod 600 az_ssh_key.pem
+          echo "SSH Key retrieved successfully."
+        shell: bash
+      
+        # Run Terraform command
       - name: Terraform Run
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
