@@ -21,16 +21,6 @@ resource "null_resource" "update_dns" {
     endpoint = digitalocean_database_cluster.pg_instance.host
   }
 
-  provisioner "file" {
-    source      = "restore_pg_dump.sh"
-    destination = "/tmp/restore_pg_dump.sh"
-    connection {
-      type        = "ssh"
-      host        = digitalocean_droplet.vm_0_0.ipv4_address
-      user        = "root"
-      private_key = file("${path.module}/az_ssh_key.pem")
-    }
-  }
 
   provisioner "local-exec" {
     command = <<EOT

@@ -47,16 +47,20 @@ resource "digitalocean_droplet" "vm_0_0" {
     inline = [
       "sudo mv /tmp/setup_instance.sh /usr/local/bin/setup_instance.sh",
       "sudo chmod +x /usr/local/bin/setup_instance.sh",
-      "export DB_HOST='${digitalocean_database_cluster.pg_instance.host}'",
-      "export DB_USER='${digitalocean_database_cluster.pg_instance.user}'", # Take user from the cluster
-      "export DB_PASS='${digitalocean_database_cluster.pg_instance.password}'",
-      "export DB_NAME='${digitalocean_database_db.db_instance.name}'",      # Take DB name from the created database
-      "export DB_PORT='${digitalocean_database_cluster.pg_instance.port}'", # Pass the correct port
-      "export ACC_KEY='${var.arm_access_key}'",
       "sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh",
       "sudo chmod +x /usr/local/bin/restore_pg_dump.sh",
-      "sudo -E /usr/local/bin/restore_pg_dump.sh",
-      "sudo -E /usr/local/bin/setup_instance.sh"
+
+
+      "echo 'export DB_HOST=${digitalocean_database_cluster.pg_instance.host}' > /tmp/env_vars.sh",
+      "echo 'export DB_USER=${digitalocean_database_cluster.pg_instance.user}' >> /tmp/env_vars.sh",
+      "echo 'export DB_PASS=${digitalocean_database_cluster.pg_instance.password}' >> /tmp/env_vars.sh",
+      "echo 'export DB_NAME=${digitalocean_database_db.db_instance.name}' >> /tmp/env_vars.sh",
+      "echo 'export DB_PORT=${digitalocean_database_cluster.pg_instance.port}' >> /tmp/env_vars.sh",
+      "echo 'export ACC_KEY=${var.arm_access_key}' >> /tmp/env_vars.sh",
+      "sudo chmod +x /tmp/env_vars.sh",
+
+      "sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/restore_pg_dump.sh'",
+      "sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/setup_instance.sh'"
     ]
     connection {
       type        = "ssh"
@@ -66,6 +70,16 @@ resource "digitalocean_droplet" "vm_0_0" {
       private_key = file("${path.module}/az_ssh_key.pem")
     }
   }
+  provisioner "local-exec" {
+    command = "python3 update_hetzner.py"
+    environment = {
+      HETZNER_DNS_KEY     = var.hetzner_dns_key
+      NEW_IP              = digitalocean_droplet.vm_0_0.ipv4_address
+      HETZNER_RECORD_NAME = "webdo7"
+      HETZNER_DOMAIN_NAME = "pam4.com"
+    }
+  }
+
 
   depends_on = [digitalocean_database_cluster.pg_instance, digitalocean_database_db.db_instance]
 }
