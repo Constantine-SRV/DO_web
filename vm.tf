@@ -22,7 +22,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     destination = "/tmp/setup_instance.sh"
     connection {
       type        = "ssh"
-      host        = self.ipv4_address
+      host        = digitalocean_droplet.vm_0_0.ipv4_address
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }
@@ -34,7 +34,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     destination = "/tmp/restore_pg_dump.sh"
     connection {
       type        = "ssh"
-      host        = self.ipv4_address
+      host        = digitalocean_droplet.vm_0_0.ipv4_address
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }
@@ -58,7 +58,7 @@ resource "digitalocean_droplet" "vm_0_0" {
     ]
     connection {
       type        = "ssh"
-      host        = self.ipv4_address
+      host        = digitalocean_droplet.vm_0_0.ipv4_address
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
     }

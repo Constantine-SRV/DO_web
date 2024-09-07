@@ -15,21 +15,21 @@ resource "digitalocean_database_db" "db_instance" {
   name       = "dbwebdo"                                    # Custom database name
 }
 
-# Create a firewall for the PostgreSQL database with public access temporarily
-resource "digitalocean_database_firewall" "pg_sg" {
-  cluster_id = digitalocean_database_cluster.pg_instance.id # Associate with the PostgreSQL cluster
-
-  # Allow access from all IPs (temporary rule)
-  rule {
-    type  = "ip_addr"
-    value = "0.0.0.0/0" # Temporary allow access to everyone
-  }
-}
-
 # null_resource for updating DNS records (using the Hetzner API)
 resource "null_resource" "update_dns" {
   triggers = {
     endpoint = digitalocean_database_cluster.pg_instance.host
+  }
+
+  provisioner "file" {
+    source      = "restore_pg_dump.sh"
+    destination = "/tmp/restore_pg_dump.sh"
+    connection {
+      type        = "ssh"
+      host        = digitalocean_droplet.vm_0_0.ipv4_address
+      user        = "root"
+      private_key = file("${path.module}/az_ssh_key.pem")
+    }
   }
 
   provisioner "local-exec" {
@@ -44,14 +44,9 @@ resource "null_resource" "update_dns" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
-
-  provisioner "file" {
-    source      = "restore_pg_dump.sh"
-    destination = "/tmp/restore_pg_dump.sh"
-  }
 }
 
-# Update firewall to allow only the Droplet access
+# Create a firewall for the PostgreSQL database after Droplet creation
 resource "digitalocean_database_firewall" "pg_sg_update" {
   cluster_id = digitalocean_database_cluster.pg_instance.id
 
