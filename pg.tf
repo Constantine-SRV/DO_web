@@ -21,12 +21,10 @@ resource "digitalocean_database_firewall" "pg_sg" {
 
   # Allow access from a specific Droplet
   rule {
-    type  = "droplet"
-    value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
+    type  = "ip_addr"
+    value = "0.0.0.0/0" # Temporary allow access to everyone
   }
 
-  # Uncomment to allow access from all IPs (public access), removing all trusted sources
-  # trusted_sources = []
 }
 
 # null_resource for updating DNS records (using the Hetzner API) and restoring database from a dump
@@ -40,16 +38,6 @@ resource "null_resource" "update_dns_and_restore_db" {
       # Update DNS using Hetzner API
       python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log
 
-      # Restore database from a dump
-      export DB_HOST='${digitalocean_database_cluster.pg_instance.host}'
-      export DB_USER='${digitalocean_database_cluster.pg_instance.user}' # Take user from the cluster
-      export DB_PASS='${digitalocean_database_cluster.pg_instance.password}'
-      export DB_NAME='${digitalocean_database_db.db_instance.name}' # Take DB name from the created database
-      export DB_PORT='${digitalocean_database_cluster.pg_instance.port}' # Pass the correct port
-      export ACC_KEY='${var.arm_access_key}'
-      sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh
-      sudo chmod +x /usr/local/bin/restore_pg_dump.sh
-      sudo -E /usr/local/bin/restore_pg_dump.sh
     EOT
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
@@ -64,6 +52,21 @@ resource "null_resource" "update_dns_and_restore_db" {
     destination = "/tmp/restore_pg_dump.sh"
   }
 }
+
+
+resource "digitalocean_database_firewall" "pg_sg_update" {
+  cluster_id = digitalocean_database_cluster.pg_instance.id
+
+  # Allow access only from Droplet
+  rule {
+    type  = "droplet"
+    value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
+  }
+
+  depends_on = [null_resource.update_firewall] # Update after Droplet is created
+}
+
+
 
 # Output the PostgreSQL database username
 output "db_user" {
