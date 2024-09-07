@@ -8,9 +8,6 @@ resource "digitalocean_database_cluster" "pg_instance" {
   node_count           = 1                           # Number of nodes in the cluster
   private_network_uuid = digitalocean_vpc.vpc-0-0.id # Attach to the created VPC
 
-  # Database access configuration
-  user     = "dbuser"
-  password = var.db_password # Use the password from the GitHub secret
 }
 
 # Create a new database in the cluster
@@ -51,5 +48,17 @@ resource "null_resource" "update_dns" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
+}
+# Output the PostgreSQL database username
+output "db_user" {
+  description = "The username for the PostgreSQL database"
+  value       = digitalocean_database_cluster.pg_instance.user
+}
+
+# Output the PostgreSQL database password (sensitive)
+output "db_password" {
+  description = "The password for the PostgreSQL database"
+  value       = digitalocean_database_cluster.pg_instance.password
+  sensitive   = true
 }
 
