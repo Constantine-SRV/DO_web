@@ -18,6 +18,7 @@ echo "!- Setup az-cli get"
 sudo apt-get install azure-cli -y
 
 # Update system and install necessary tools (for DO only)
+echo "!-apt-get install -y postgresql-client azure-cli jq one more time"
 sudo apt-get update
 sudo apt-get install -y postgresql-client azure-cli jq
 
