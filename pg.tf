@@ -50,7 +50,7 @@ resource "digitalocean_database_firewall" "pg_sg_update" {
     value = digitalocean_droplet.vm_0_6.id # Allow access from the Droplet
   }
 
-  depends_on = [digitalocean_droplet.vm_0_7,digitalocean_droplet.vm_0_7] # Ensure Droplet is created before updating firewall
+  depends_on = [digitalocean_droplet.vm_0_7,digitalocean_droplet.vm_0_6] # Ensure Droplet is created before updating firewall
 }
 
 # Output the PostgreSQL database username
