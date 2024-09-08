@@ -6,7 +6,7 @@ resource "digitalocean_database_cluster" "pg_instance" {
   region               = "fra1"                      # Region (e.g., Frankfurt)
   size                 = "db-s-1vcpu-1gb"            # Database instance size
   node_count           = 1                           # Number of nodes in the cluster
-  private_network_uuid = digitalocean_vpc.vpc-0-0.id # Attach to the created VPC
+  private_network_uuid = digitalocean_vpc.fra1-10-0.id # Attach to the created VPC
 }
 
 # Create a new database in the cluster
@@ -43,10 +43,10 @@ resource "digitalocean_database_firewall" "pg_sg_update" {
   # Allow access only from Droplet
   rule {
     type  = "droplet"
-    value = digitalocean_droplet.vm_0_0.id # Allow access from the Droplet
+    value = digitalocean_droplet.vm_0_7.id # Allow access from the Droplet
   }
 
-  depends_on = [digitalocean_droplet.vm_0_0] # Ensure Droplet is created before updating firewall
+  depends_on = [digitalocean_droplet.vm_0_7] # Ensure Droplet is created before updating firewall
 }
 
 # Output the PostgreSQL database username
