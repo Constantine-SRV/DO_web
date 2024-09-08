@@ -64,7 +64,7 @@ resource "digitalocean_droplet" "vm_0_7" {
     ]
     connection {
       type        = "ssh"
-      host        = digitalocean_droplet.vm_0_0.ipv4_address
+      host        = self.ipv4_address
       agent       = false
       user        = "root"
       private_key = file("${path.module}/az_ssh_key.pem")
@@ -86,10 +86,10 @@ resource "null_resource" "update_dns_webdo7" {
     command = "python3 update_hetzner.py"
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
-      NEW_IP              = digitalocean_droplet.vm_0_0.ipv4_address
+      NEW_IP              = self.ipv4_address
       HETZNER_RECORD_NAME = "webdo7"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
-  depends_on = [digitalocean_droplet.vm_0_0]
+  depends_on = [digitalocean_droplet.vm_0_7]
 }
