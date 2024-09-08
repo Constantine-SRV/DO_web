@@ -5,21 +5,21 @@ resource "digitalocean_loadbalancer" "alb" {
   size   = "lb-small"
 
   forwarding_rule {
-    entry_port     = 443
-    entry_protocol = "https"
-    target_port    = 443
+    entry_port      = 443
+    entry_protocol  = "https"
+    target_port     = 443
     target_protocol = "https"
     tls_passthrough = true
   }
 
   healthcheck {
-    protocol = "https"
-    port     = 443
-    path     = "/"
-    check_interval_seconds = 10
+    protocol                 = "https"
+    port                     = 443
+    path                     = "/"
+    check_interval_seconds   = 10
     response_timeout_seconds = 5
-    healthy_threshold = 3
-    unhealthy_threshold = 3
+    healthy_threshold        = 3
+    unhealthy_threshold      = 3
   }
 
   droplet_ids = [
