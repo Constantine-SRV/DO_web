@@ -14,8 +14,12 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 sudo apt-get update
 sudo apt-get install -y postgresql-client-16
 
-echo "!- Setup az-cli"
+echo "!- Setup az-cli get"
 sudo apt-get install azure-cli -y
+
+# Update system and install necessary tools (for DO only)
+sudo apt-get update
+sudo apt-get install -y postgresql-client azure-cli jq
 
 echo "!-Downloading database dump from Azure blob..."
 az storage blob download --container-name web --name dbwebaws_backup.dump --file ~/dbwebaws_backup.dump --account-name constantine2zu --auth-mode key --account-key ${ACC_KEY}
