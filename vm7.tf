@@ -5,7 +5,7 @@ data "digitalocean_ssh_key" "az_ssh_key" {
 
 # Create a Droplet in the specified VPC
 resource "digitalocean_droplet" "vm_0_7" {
-  name     = "terraform-droplet"
+  name     = "tf-droplet-07"
   region   = "fra1"                        # Region for Droplet (e.g., Frankfurt)
   size     = "s-1vcpu-1gb"                 # Droplet size
   image    = "ubuntu-22-04-x64"            # OS image for the Droplet
@@ -86,7 +86,7 @@ resource "null_resource" "update_dns_webdo7" {
     command = "python3 update_hetzner.py"
     environment = {
       HETZNER_DNS_KEY     = var.hetzner_dns_key
-      NEW_IP              = self.ipv4_address
+      NEW_IP              = digitalocean_droplet.vm_0_7.ipv4_address
       HETZNER_RECORD_NAME = "webdo7"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
