@@ -11,6 +11,8 @@ ACC_KEY=${ACC_KEY:-"XXX"}
 echo "!-apt-get update"
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
 sudo apt-get update
 sudo apt-get install -y postgresql-client
 
@@ -18,9 +20,10 @@ echo "!- Setup az-cli get"
 sudo apt-get install azure-cli -y
 
 # Update system and install necessary tools (for DO only)
-echo "!-apt-get install -y postgresql-client azure-cli jq one more time"
-sudo apt-get update
-sudo apt-get install -y postgresql-client azure-cli jq
+# echo "!-apt-get install -y postgresql-client azure-cli jq one more time"
+
+# sudo apt-get update
+# sudo apt-get install -y postgresql-client azure-cli jq
 
 echo "!-Downloading database dump from Azure blob..."
 az storage blob download --container-name web --name dbwebaws_backup.dump --file ~/dbwebaws_backup.dump --account-name constantine2zu --auth-mode key --account-key ${ACC_KEY}
