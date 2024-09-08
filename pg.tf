@@ -53,15 +53,3 @@ resource "digitalocean_database_firewall" "pg_sg_update" {
   depends_on = [digitalocean_droplet.vm_0_7,digitalocean_droplet.vm_0_6] # Ensure Droplet is created before updating firewall
 }
 
-# Output the PostgreSQL database username
-output "db_user" {
-  description = "The username for the PostgreSQL database"
-  value       = digitalocean_database_cluster.pg_instance.user
-}
-
-# Output the PostgreSQL database password (sensitive)
-output "db_password" {
-  description = "The password for the PostgreSQL database"
-  value       = digitalocean_database_cluster.pg_instance.password
-  sensitive   = true
-}

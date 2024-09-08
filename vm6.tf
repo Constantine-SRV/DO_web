@@ -76,7 +76,7 @@ resource "digitalocean_droplet" "vm_0_6" {
   depends_on = [digitalocean_database_cluster.pg_instance, digitalocean_database_db.db_instance]
 }
 
-resource "null_resource" "update_dns_webdo7" {
+resource "null_resource" "update_dns_webdo6" {
   triggers = {
     endpoint = digitalocean_database_cluster.pg_instance.host
   }

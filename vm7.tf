@@ -12,7 +12,7 @@ resource "digitalocean_droplet" "vm_0_7" {
   vpc_uuid = digitalocean_vpc.fra1-10-0.id # Attach Droplet to the created VPC
 
   # Use the existing SSH key
-  ssh_keys = [data.digitalocean_ssh_key.az_ssh_key.id]
+  #ssh_keys = [data.digitalocean_ssh_key.az_ssh_key.id]
 
   tags = ["terraform", "droplet"]
 
