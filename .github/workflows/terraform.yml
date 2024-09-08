@@ -29,7 +29,6 @@ jobs:
         uses: hashicorp/setup-terraform@v2.0.2
       
       - name: Retrieve SSH Key from Azure Storage
-        if: ${{ github.event.inputs.command == 'apply' }}
         run: |
           echo "Retrieving SSH Key from Azure Storage..."
           az storage blob download --container-name key --name az_ssh_key.pem --file az_ssh_key.pem --account-name constantine2zu --auth-mode key --account-key ${{ secrets.ARM_ACCESS_KEY }}
