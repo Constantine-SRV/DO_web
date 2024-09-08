@@ -91,5 +91,5 @@ resource "null_resource" "update_dns_webdo6" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
-  depends_on = [digitalocean_droplet.vm_0_6 ]
+  depends_on = [digitalocean_droplet.vm_0_6]
 }
