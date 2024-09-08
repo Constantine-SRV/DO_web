@@ -8,10 +8,12 @@ DB_NAME=${DB_NAME:-"dbwebaws"}
 AZURE_STORAGE_ACCOUNT="constantine2zu"
 AZURE_CONTAINER_NAME="web"
 
-# Add Microsoft repository for Azure CLI
+echo "!-apt-get update"
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-# Update system and install necessary tools
+echo "!- Setup  all  - sudo apt-get install -y postgresql-client azure-cli jq"
 sudo apt-get update
 sudo apt-get install -y postgresql-client azure-cli jq
 
