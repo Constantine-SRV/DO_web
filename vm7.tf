@@ -59,7 +59,7 @@ resource "digitalocean_droplet" "vm_0_7" {
       "echo 'export ACC_KEY=${nonsensitive(var.arm_access_key)}' >> /tmp/env_vars.sh",
       "sudo chmod +x /tmp/env_vars.sh",
 
-      "sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/restore_pg_dump.sh'",
+      #"sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/restore_pg_dump.sh'",
       "sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/setup_instance.sh'"
     ]
     connection {

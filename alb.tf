@@ -36,8 +36,8 @@ resource "null_resource" "update_dns_alb" {
   provisioner "local-exec" {
     command = "python3 update_hetzner.py"
     environment = {
-      HETZNER_DNS_KEY     = var.hetzner_dns_key
-      NEW_IP              = digitalocean_loadbalancer.alb.ip
+      HETZNER_DNS_KEY     = nonsensitive(var.hetzner_dns_key)
+      NEW_IP              = nonsensitive(digitalocean_loadbalancer.alb.ip)
       HETZNER_RECORD_NAME = "webdo"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }

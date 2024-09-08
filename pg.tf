@@ -28,8 +28,8 @@ resource "null_resource" "update_dns" {
       python3 update_hetzner.py > /tmp/update_hetzner.log 2>&1; cat /tmp/update_hetzner.log
     EOT
     environment = {
-      HETZNER_DNS_KEY     = var.hetzner_dns_key
-      HETZNER_C_NAME      = digitalocean_database_cluster.pg_instance.host
+      HETZNER_DNS_KEY     = nonsensitive(var.hetzner_dns_key)
+      HETZNER_C_NAME      = nonsensitive(digitalocean_database_cluster.pg_instance.host)
       HETZNER_RECORD_NAME = "pgdo"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
