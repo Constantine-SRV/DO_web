@@ -42,11 +42,11 @@ resource "digitalocean_database_firewall" "pg_sg_update" {
 
   # Allow access only from Droplet
   rule {
-    type  = "droplet7"
+    type  = "droplet"
     value = digitalocean_droplet.vm_0_7.id # Allow access from the Droplet
   }
   rule {
-    type  = "droplet6"
+    type  = "droplet"
     value = digitalocean_droplet.vm_0_6.id # Allow access from the Droplet
   }
 
