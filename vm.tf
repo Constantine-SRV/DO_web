@@ -6,9 +6,9 @@ data "digitalocean_ssh_key" "az_ssh_key" {
 # Create a Droplet in the specified VPC
 resource "digitalocean_droplet" "vm_0_7" {
   name     = "terraform-droplet"
-  region   = "fra1"                      # Region for Droplet (e.g., Frankfurt)
-  size     = "s-1vcpu-1gb"               # Droplet size
-  image    = "ubuntu-22-04-x64"          # OS image for the Droplet
+  region   = "fra1"                        # Region for Droplet (e.g., Frankfurt)
+  size     = "s-1vcpu-1gb"                 # Droplet size
+  image    = "ubuntu-22-04-x64"            # OS image for the Droplet
   vpc_uuid = digitalocean_vpc.fra1-10-0.id # Attach Droplet to the created VPC
 
   # Use the existing SSH key

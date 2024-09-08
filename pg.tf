@@ -1,11 +1,11 @@
 # Create a PostgreSQL database cluster
 resource "digitalocean_database_cluster" "pg_instance" {
-  name                 = "pgdbwebdo"                 # Name of the PostgreSQL cluster
-  engine               = "pg"                        # PostgreSQL engine
-  version              = "16"                        # PostgreSQL version
-  region               = "fra1"                      # Region (e.g., Frankfurt)
-  size                 = "db-s-1vcpu-1gb"            # Database instance size
-  node_count           = 1                           # Number of nodes in the cluster
+  name                 = "pgdbwebdo"                   # Name of the PostgreSQL cluster
+  engine               = "pg"                          # PostgreSQL engine
+  version              = "16"                          # PostgreSQL version
+  region               = "fra1"                        # Region (e.g., Frankfurt)
+  size                 = "db-s-1vcpu-1gb"              # Database instance size
+  node_count           = 1                             # Number of nodes in the cluster
   private_network_uuid = digitalocean_vpc.fra1-10-0.id # Attach to the created VPC
 }
 
