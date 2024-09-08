@@ -13,11 +13,12 @@ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
+echo "!- Setup  all  - sudo apt-get install -y postgresql-client azure-cli jq"
 sudo apt-get update
-sudo apt-get install -y postgresql-client
+sudo apt-get install -y postgresql-client azure-cli jq
 
-echo "!- Setup az-cli get"
-sudo apt-get install azure-cli -y
+# echo "!- Setup az-cli get"
+# sudo apt-get install azure-cli -y
 
 # Update system and install necessary tools (for DO only)
 # echo "!-apt-get install -y postgresql-client azure-cli jq one more time"
