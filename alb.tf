@@ -1,8 +1,9 @@
 # Define a Load Balancer (ALB) for the two droplets
 resource "digitalocean_loadbalancer" "alb" {
-  name   = "fra1-load-balancer-01"
-  region = "fra1"
-  size   = "lb-small"
+  name     = "fra1-load-balancer-01"
+  region   = "fra1"
+  size     = "lb-small"
+  vpc_uuid = digitalocean_vpc.fra1-10-0.id
 
   forwarding_rule {
     entry_port      = 443
