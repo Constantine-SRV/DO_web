@@ -51,12 +51,12 @@ resource "digitalocean_droplet" "vm_0_0" {
       "sudo chmod +x /usr/local/bin/restore_pg_dump.sh",
 
 
-      "echo 'export DB_HOST=${digitalocean_database_cluster.pg_instance.host}' > /tmp/env_vars.sh",
-      "echo 'export DB_USER=${digitalocean_database_cluster.pg_instance.user}' >> /tmp/env_vars.sh",
-      "echo 'export DB_PASS=${digitalocean_database_cluster.pg_instance.password}' >> /tmp/env_vars.sh",
-      "echo 'export DB_NAME=${digitalocean_database_db.db_instance.name}' >> /tmp/env_vars.sh",
-      "echo 'export DB_PORT=${digitalocean_database_cluster.pg_instance.port}' >> /tmp/env_vars.sh",
-      "echo 'export ACC_KEY=${var.arm_access_key}' >> /tmp/env_vars.sh",
+      "echo 'export DB_HOST=${nonsensitive(digitalocean_database_cluster.pg_instance.host)}' > /tmp/env_vars.sh",
+      "echo 'export DB_USER=${nonsensitive(digitalocean_database_cluster.pg_instance.user)}' >> /tmp/env_vars.sh",
+      "echo 'export DB_PASS=${nonsensitive(digitalocean_database_cluster.pg_instance.password)}' >> /tmp/env_vars.sh",
+      "echo 'export DB_NAME=${nonsensitive(digitalocean_database_db.db_instance.name)}' >> /tmp/env_vars.sh",
+      "echo 'export DB_PORT=${nonsensitive(digitalocean_database_cluster.pg_instance.port)}' >> /tmp/env_vars.sh",
+      "echo 'export ACC_KEY=${nonsensitive(var.arm_access_key)}' >> /tmp/env_vars.sh",
       "sudo chmod +x /tmp/env_vars.sh",
 
       "sudo -E /bin/bash -c 'source /tmp/env_vars.sh && /usr/local/bin/restore_pg_dump.sh'",

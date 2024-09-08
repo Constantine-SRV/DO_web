@@ -3,6 +3,8 @@
 # Default settings for Azure
 PFX_FILE_NAME=${PFX_FILE_NAME:-"webaws_pam4_com.pfx"}
 DB_HOST=${DB_HOST:-"pgaz.pam4.com"}
+DB_PORT=${DB_PORT:-"5432"}      
+DB_NAME=${DB_NAME:-"dbwebaws"}  
 AZURE_STORAGE_ACCOUNT="constantine2zu"
 AZURE_CONTAINER_NAME="web"
 
@@ -30,9 +32,11 @@ sudo chmod -R 755 /var/www/BlazorAut/wwwroot/
 # Configure app settings
 APPSETTINGS_PATH="/var/www/BlazorAut/appsettings.json"
 jq --arg db_host "$DB_HOST" \
+   --arg db_port "$DB_PORT" \
+   --arg db_name "$DB_NAME" \
    --arg db_user "$DB_USER" \
    --arg db_pass "$DB_PASS" \
-   '.ConnectionStrings.DefaultConnection = ("Host=" + $db_host + ";Database=dbwebaws;Username=" + $db_user + ";Password=" + $db_pass)' \
+   '.ConnectionStrings.DefaultConnection = ("Host=" + $db_host + ";Port=" + $db_port + ";Database=" + $db_name + ";Username=" + $db_user + ";Password=" + $db_pass)' \
    $APPSETTINGS_PATH > $APPSETTINGS_PATH.tmp && mv $APPSETTINGS_PATH.tmp $APPSETTINGS_PATH
 
 # Setup service
@@ -46,6 +50,9 @@ ExecStart=/var/www/BlazorAut/BlazorAut
 Restart=always
 RestartSec=10
 SyslogIdentifier=BlazorAut
+
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/BlazorAut.service
